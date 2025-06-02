@@ -8,6 +8,7 @@ public class ServiceNode {
     private LocalDate serviceDate;
     private double cost;
     private String status; // 'pending', 'on_going', 'completed'
+    private ServiceNode next; 
 
     // Constructor for new service
     public ServiceNode(String customerName, String deviceType, String problemDescription, double cost) {
@@ -73,6 +74,14 @@ public class ServiceNode {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public ServiceNode getNext() {
+        return next;
+    }
+    
+    public void setNext(ServiceNode next) {
+        this.next = next;
     }
 
     public String toString() {
