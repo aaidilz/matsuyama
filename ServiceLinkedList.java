@@ -1,5 +1,7 @@
 import java.util.Scanner;
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class ServiceLinkedList {
     private ServiceNode head;
@@ -190,5 +192,51 @@ public class ServiceLinkedList {
         }
 
         return lastId;
+    }
+
+    // Helper untuk ambil data service di arsip, lalu simpan ke head
+    private void muatDariArsip() {
+        // Bersihkan head sebelum memuat ulang dari file
+        head = null;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(ARSIP_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split("\\" + DELIMITER);
+                if (data.length == 7) {
+                    try {
+                        int id = Integer.parseInt(data[0]);
+                        String nama = data[1];
+                        String perangkat = data[2];
+                        String masalah = data[3];
+                        LocalDate tanggal = LocalDate.parse(data[4]); // Konversi dari String ke LocalDate
+                        double biaya = Double.parseDouble(data[5]);
+                        String status = data[6];
+
+                        ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya);
+                        newNode.setServiceId(id);
+                        newNode.setServiceDate(tanggal);
+                        newNode.setStatus(status);
+
+                        if (head == null) {
+                            head = newNode;
+                        } else {
+                            ServiceNode current = head;
+                            while (current.getNext() != null) {
+                                current = current.getNext();
+                            }
+                            current.setNext(newNode);
+                        }
+
+                    } catch (NumberFormatException | DateTimeParseException e) {
+                        System.err.println("Lewati baris rusak: " + line);
+                    }
+                }
+            }
+
+            System.out.println("Data berhasil dimuat dari arsip ke memori.");
+        } catch (IOException e) {
+            System.err.println("Gagal memuat data dari arsip: " + e.getMessage());
+        }
     }
 }
