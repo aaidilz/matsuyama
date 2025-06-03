@@ -239,4 +239,94 @@ public class ServiceLinkedList {
             System.err.println("Gagal memuat data dari arsip: " + e.getMessage());
         }
     }
+
+    // Fungsi Hapus data service berdasarkan ID
+    public void hapusDataServiceById(Scanner scanner) {
+        muatDariArsip();
+        tampilDataService();
+
+        if (head == null) {
+            System.out.println("Tidak ada data servis untuk dihapus.");
+            return;
+        }
+
+        System.out.print("Masukkan ID servis yang ingin dihapus: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        ServiceNode current = head;
+        ServiceNode prev = null;
+
+        while (current != null) {
+            if (current.getServiceId() == id) {
+                System.out.print("Apakah Anda yakin ingin menghapus data dengan ID " + id + "? (y/n): ");
+                String confirm = scanner.nextLine();
+                if (confirm.equalsIgnoreCase("y")) {
+                    if (prev == null) {
+                        head = current.getNext();
+                    } else {
+                        prev.setNext(current.getNext());
+                    }
+                    tulisUlangSeluruhArsip();
+                    System.out.println("Data berhasil dihapus.");
+                } else {
+                    System.out.println("Penghapusan dibatalkan.");
+                }
+                return;
+            }
+            prev = current;
+            current = current.getNext();
+        }
+
+        System.out.println("Data dengan ID tersebut tidak ditemukan.");
+    }
+    
+    // Fungsi Hapus semua data service
+    public void hapusSemuaDataService(Scanner scanner) {
+        muatDariArsip();
+        
+        if (head == null) {
+            System.out.println("Tidak ada data servis untuk dihapus.");
+            return;
+        }
+
+        System.out.print("Apakah Anda yakin ingin menghapus SEMUA data servis? (y/n): ");
+        String confirm = scanner.nextLine();
+
+        if (confirm.equalsIgnoreCase("y")) {
+            head = null;
+
+            // Kosongkan isi file
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARSIP_FILE))) {
+                writer.write(""); // tulis kosong
+            } catch (IOException e) {
+                System.err.println("Gagal menghapus arsip: " + e.getMessage());
+                return;
+            }
+
+            System.out.println("Semua data servis berhasil dihapus.");
+        } else {
+            System.out.println("Penghapusan semua data dibatalkan.");
+        }
+    }
+
+    // Helper untuk menyimpan ulang (menimpa) semua data dari linked list ke arsip
+    private void tulisUlangSeluruhArsip() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARSIP_FILE))) {
+            ServiceNode current = head;
+            while (current != null) {
+                String data = current.getServiceId() + DELIMITER +
+                        current.getCustomerName() + DELIMITER +
+                        current.getDeviceType() + DELIMITER +
+                        current.getProblemDescription() + DELIMITER +
+                        current.getServiceDate() + DELIMITER +
+                        current.getCost() + DELIMITER +
+                        current.getStatus();
+                writer.write(data);
+                writer.newLine();
+                current = current.getNext();
+            }
+        } catch (IOException e) {
+            System.err.println("Gagal menyimpan ulang data ke arsip: " + e.getMessage());
+        }
+    }
 }

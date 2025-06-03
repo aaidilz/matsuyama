@@ -1,5 +1,2 @@
-1|candra|hp|lcd|2025-06-02|20000.0|pending
-2|kirana|kamera|lensa|2025-06-02|30000.0|pending
-3|ck|hp|cld|2025-06-02|10000.0|pending
-4|tes|hp|ldc|2025-06-02|20000.0|pending
-5|hand|hp|lds|2025-06-02|2000.0|pending
+2|ck|hp|lcd|2025-06-02|7000.0|pending
+3|ck|hp|lcd|2025-06-02|7000.0|pending

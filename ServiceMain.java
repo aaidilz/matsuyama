@@ -11,6 +11,8 @@ public class ServiceMain {
             System.out.println("2. Tampil Data Service (Memory)");
             System.out.println("3. Baca File Arsip");
             System.out.println("4. Statistik Service");
+            System.out.println("5. Hapus Data Service berdasarkan ID");
+            System.out.println("6. Hapus Semua Data Service");
             System.out.println("0. Keluar");
             System.out.print("Pilih menu: ");
 
@@ -34,6 +36,12 @@ public class ServiceMain {
                     break;
                 case 4:
                     serviceList.size();
+                    break;
+                case 5:
+                    serviceList.hapusDataServiceById(scanner);
+                    break;
+                case 6:
+                    serviceList.hapusSemuaDataService(scanner);
                     break;
                 case 0:
                     System.out.println("Terima kasih!");
