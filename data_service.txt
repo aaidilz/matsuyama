@@ -1,2 +1,2 @@
-2|ck|hp|lcd|2025-06-02|7000.0|pending
+2|Raden|Laptop LOQ|Keybord|2025-06-02|150000.0|on_going
 3|ck|hp|lcd|2025-06-02|7000.0|pending

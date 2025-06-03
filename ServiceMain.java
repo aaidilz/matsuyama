@@ -13,6 +13,7 @@ public class ServiceMain {
             System.out.println("4. Statistik Service");
             System.out.println("5. Hapus Data Service berdasarkan ID");
             System.out.println("6. Hapus Semua Data Service");
+            System.out.println("7. Update Data Service");
             System.out.println("0. Keluar");
             System.out.print("Pilih menu: ");
 
@@ -42,6 +43,8 @@ public class ServiceMain {
                     break;
                 case 6:
                     serviceList.hapusSemuaDataService(scanner);
+                case 7: 
+                 serviceList.updateDataService();
                     break;
                 case 0:
                     System.out.println("Terima kasih!");
