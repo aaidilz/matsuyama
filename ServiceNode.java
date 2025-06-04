@@ -20,6 +20,7 @@ public class ServiceNode {
         this.serviceDate = LocalDate.now();
         this.cost = 0.0;
         this.status = "pending";
+        this.priority = ""; // Default priority
         this.next = null;
     }
 
@@ -30,6 +31,7 @@ public class ServiceNode {
         this.problemDescription = problemDescription;
         this.cost = cost;
         this.status = "pending";
+        this.priority = "";
         this.serviceDate = LocalDate.now();
     }
 
