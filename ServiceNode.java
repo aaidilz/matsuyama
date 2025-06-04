@@ -8,6 +8,7 @@ public class ServiceNode {
     private LocalDate serviceDate;
     private double cost;
     private String status; // 'pending', 'on_going', 'completed'
+    private String priority;
     private ServiceNode next;
 
     // Constructor for default service
@@ -103,6 +104,15 @@ public class ServiceNode {
                 ", Problem: " + problemDescription +
                 ", Date: " + serviceDate +
                 ", Cost: Rp" + cost +
-                ", Status: " + status;
+                ", Status: " + status +
+                ", Prioritas: " + priority;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 }
