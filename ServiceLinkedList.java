@@ -28,11 +28,11 @@ public class ServiceLinkedList {
                     break;
                 case "on_going":
                 case "ongoing": // jika ada variasi penulisan
-                onGoing++;
-                break;
+                    onGoing++;
+                    break;
                 case "completed":
-                completed++;
-                break;
+                    completed++;
+                    break;
             }
             current = current.getNext();
         }
@@ -45,7 +45,7 @@ public class ServiceLinkedList {
         System.out.println("Completed       : " + completed);
         System.out.println("=============================");
     }
-    
+
     // Fungsi tambahDataService untuk menambahkan data service baru
     public void tambahDataService(Scanner scanner) {
         System.out.println("Masukkan nama pelanggan:");
@@ -286,11 +286,11 @@ public class ServiceLinkedList {
 
         System.out.println("Data dengan ID tersebut tidak ditemukan.");
     }
-    
+
     // Fungsi Hapus semua data service
     public void hapusSemuaDataService(Scanner scanner) {
         muatDariArsip();
-        
+
         if (head == null) {
             System.out.println("Tidak ada data servis untuk dihapus.");
             return;
@@ -345,15 +345,18 @@ public class ServiceLinkedList {
                 // Input data baru, jika kosong maka data lama tetap
                 System.out.print("Nama Customer [" + current.getCustomerName() + "]: ");
                 String nama = scanner.nextLine();
-                if (!nama.isEmpty()) current.setCustomerName(nama);
+                if (!nama.isEmpty())
+                    current.setCustomerName(nama);
 
                 System.out.print("Tipe Device [" + current.getDeviceType() + "]: ");
                 String device = scanner.nextLine();
-                if (!device.isEmpty()) current.setDeviceType(device);
+                if (!device.isEmpty())
+                    current.setDeviceType(device);
 
                 System.out.print("Deskripsi Masalah [" + current.getProblemDescription() + "]: ");
                 String masalah = scanner.nextLine();
-                if (!masalah.isEmpty()) current.setProblemDescription(masalah);
+                if (!masalah.isEmpty())
+                    current.setProblemDescription(masalah);
 
                 System.out.print("Biaya [" + current.getCost() + "]: ");
                 String biayaInput = scanner.nextLine();
@@ -379,7 +382,7 @@ public class ServiceLinkedList {
         if (!ditemukan) {
             System.out.println("Service ID " + serviceId + " tidak ditemukan.");
         }
-            tulisUlangSeluruhArsip(); // Simpan semua perubahan ke file
+        tulisUlangSeluruhArsip(); // Simpan semua perubahan ke file
     }
 
     private String pilihStatusBaru(Scanner scanner) {
@@ -391,10 +394,14 @@ public class ServiceLinkedList {
             String pilih = scanner.nextLine();
 
             switch (pilih) {
-                case "1": return "pending";
-                case "2": return "on_going";
-                case "3": return "completed";
-                default: System.out.println("Pilihan tidak valid, coba lagi.");
+                case "1":
+                    return "pending";
+                case "2":
+                    return "on_going";
+                case "3":
+                    return "completed";
+                default:
+                    System.out.println("Pilihan tidak valid, coba lagi.");
             }
         }
     }
@@ -417,6 +424,67 @@ public class ServiceLinkedList {
             }
         } catch (IOException e) {
             System.err.println("Gagal menyimpan ulang data ke arsip: " + e.getMessage());
+        }
+    }
+
+    public void mainMenu() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("\n=== SISTEM PENCATATAN DATA SERVICE ===");
+            System.out.println("1. Tambah Data Service");
+            System.out.println("2. Tampil Data Service (Memory)");
+            System.out.println("3. Baca File Arsip");
+            System.out.println("4. Statistik Service");
+            System.out.println("5. Hapus Data Service berdasarkan ID");
+            System.out.println("6. Hapus Semua Data Service");
+            System.out.println("7. Update Data Service");
+            System.out.println("0. Keluar");
+            System.out.print("Pilih menu: ");
+            int pilihan = 0;
+            try {
+                pilihan = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Pilihan tidak valid!");
+                continue;
+            }
+
+            switch (pilihan) {
+                case 1:
+                    System.out.println("======");
+                    this.tambahDataService(scanner);
+                    break;
+                case 2:
+                    System.out.println("======");
+                    this.tampilDataService();
+                    break;
+                case 3:
+                    System.out.println("======");
+                    this.bacaFile();
+                    break;
+                case 4:
+                    System.out.println("======");
+                    this.statistik();
+                    break;
+                case 5:
+                    System.out.println("======");
+                    this.hapusDataServiceById(scanner);
+                    break;
+                case 6:
+                    System.out.println("======");
+                    this.hapusSemuaDataService(scanner);
+                    break;
+                case 7:
+                    System.out.println("======");
+                    this.updateDataService();
+                    break;
+                case 0:
+                    System.out.println("======");
+                    System.out.println("Terima kasih!");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Pilihan tidak valid!");
+            }
         }
     }
 }
