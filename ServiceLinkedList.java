@@ -57,6 +57,17 @@ public class ServiceLinkedList {
         System.out.println("Masukkan deskripsi masalah:");
         String masalah = scanner.nextLine();
 
+        String prioritas;
+        while (true) {
+            System.out.println("Masukkan prioritas (mudah, menengah, sulit):");
+            prioritas = scanner.nextLine().toLowerCase();
+            if (prioritas.equals("mudah") || prioritas.equals("menengah") || prioritas.equals("sulit")) {
+            break;
+            } else {
+            System.out.println("Prioritas tidak valid. Harap masukkan salah satu dari: mudah, menengah, sulit.");
+            }
+        }
+
         System.out.println("Masukkan biaya servis:");
         double biaya = 0;
         while (true) {
@@ -69,7 +80,7 @@ public class ServiceLinkedList {
         }
 
         // Buat node baru
-        ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya);
+        ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya, prioritas);
 
         // Set ID otomatis
         newNode.setServiceId(generateNewId());
@@ -114,6 +125,7 @@ public class ServiceLinkedList {
             System.out.println("Tanggal Servis: " + current.getServiceDate());
             System.out.println("Biaya Servis: Rp" + current.getCost());
             System.out.println("Status: " + current.getStatus());
+            System.out.println("Prioritas: " + current.getPriority());
             System.out.println("-----------------------------");
             current = current.getNext();
         }
@@ -130,7 +142,8 @@ public class ServiceLinkedList {
                     node.getProblemDescription() + DELIMITER +
                     node.getServiceDate().toString() + DELIMITER +
                     node.getCost() + DELIMITER +
-                    node.getStatus();
+                    node.getStatus() + DELIMITER +
+                    node.getPriority();
 
             bufferedWriter.write(data);
             bufferedWriter.newLine();
@@ -151,7 +164,7 @@ public class ServiceLinkedList {
 
             while ((line = bufferedReader.readLine()) != null) {
                 String[] data = line.split("\\" + DELIMITER);
-                if (data.length == 7) {
+                if (data.length == 8) {
                     System.out.println("ID: " + data[0]);
                     System.out.println("Nama Pelanggan: " + data[1]);
                     System.out.println("Jenis Perangkat: " + data[2]);
@@ -159,6 +172,7 @@ public class ServiceLinkedList {
                     System.out.println("Tanggal Servis: " + data[4]);
                     System.out.println("Biaya Servis: Rp" + data[5]);
                     System.out.println("Status: " + data[6]);
+                    System.out.println("Prioritas: " + data[7]);
                     System.out.println("-----------------------------");
                 }
             }
@@ -210,7 +224,7 @@ public class ServiceLinkedList {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split("\\" + DELIMITER);
-                if (data.length == 7) {
+                if (data.length == 8) {
                     try {
                         int id = Integer.parseInt(data[0]);
                         String nama = data[1];
@@ -219,8 +233,9 @@ public class ServiceLinkedList {
                         LocalDate tanggal = LocalDate.parse(data[4]); // Konversi dari String ke LocalDate
                         double biaya = Double.parseDouble(data[5]);
                         String status = data[6];
+                        String prioritas = data[7];
 
-                        ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya);
+                        ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya, prioritas);
                         newNode.setServiceId(id);
                         newNode.setServiceDate(tanggal);
                         newNode.setStatus(status);

@@ -25,13 +25,13 @@ public class ServiceNode {
     }
 
     // Constructor for new service
-    public ServiceNode(String customerName, String deviceType, String problemDescription, double cost) {
+    public ServiceNode(String customerName, String deviceType, String problemDescription, double cost, String priority) {
         this.customerName = customerName;
         this.deviceType = deviceType;
         this.problemDescription = problemDescription;
         this.cost = cost;
         this.status = "pending";
-        this.priority = "";
+        this.priority = priority;
         this.serviceDate = LocalDate.now();
     }
 
