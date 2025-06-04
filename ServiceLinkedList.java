@@ -9,7 +9,9 @@ public class ServiceLinkedList {
     private static final String DELIMITER = "|";
 
     // Fungsi size untuk menghitung total dan per status
-    public void size() {
+    public void statistik() {
+        muatDariArsip(); // Isi linked list dari file
+
         int total = 0;
         int pending = 0;
         int onGoing = 0;
@@ -19,26 +21,31 @@ public class ServiceLinkedList {
         while (current != null) {
             total++;
             String status = current.getStatus().toLowerCase();
+
             switch (status) {
                 case "pending":
                     pending++;
                     break;
                 case "on_going":
-                    onGoing++;
-                    break;
+                case "ongoing": // jika ada variasi penulisan
+                onGoing++;
+                break;
                 case "completed":
-                    completed++;
-                    break;
+                completed++;
+                break;
             }
             current = current.getNext();
         }
 
-        System.out.println("Total Services: " + total);
-        System.out.println("Pending: " + pending);
-        System.out.println("On Going: " + onGoing);
-        System.out.println("Completed: " + completed);
+        // Tampilkan hasil
+        System.out.println("===== Statistik Layanan =====");
+        System.out.println("Total data      : " + total);
+        System.out.println("Pending         : " + pending);
+        System.out.println("On Going        : " + onGoing);
+        System.out.println("Completed       : " + completed);
+        System.out.println("=============================");
     }
-
+    
     // Fungsi tambahDataService untuk menambahkan data service baru
     public void tambahDataService(Scanner scanner) {
         System.out.println("Masukkan nama pelanggan:");
