@@ -16,7 +16,6 @@ public class ServiceMain {
             System.out.println("7. Update Data Service");
             System.out.println("0. Keluar");
             System.out.print("Pilih menu: ");
-
             int pilihan = 0;
             try {
                 pilihan = Integer.parseInt(scanner.nextLine());
@@ -27,26 +26,35 @@ public class ServiceMain {
 
             switch (pilihan) {
                 case 1:
+                    System.out.println("======");
                     serviceList.tambahDataService(scanner);
                     break;
                 case 2:
+                    System.out.println("======");
                     serviceList.tampilDataService();
                     break;
                 case 3:
+                    System.out.println("======");
                     serviceList.bacaFile();
                     break;
                 case 4:
+                    System.out.println("======");
                     serviceList.size();
                     break;
                 case 5:
+                    System.out.println("======");
                     serviceList.hapusDataServiceById(scanner);
                     break;
                 case 6:
+                    System.out.println("======");
                     serviceList.hapusSemuaDataService(scanner);
-                case 7: 
-                 serviceList.updateDataService();
+                    break;
+                case 7:
+                    System.out.println("======");
+                    serviceList.updateDataService();
                     break;
                 case 0:
+                    System.out.println("======");
                     System.out.println("Terima kasih!");
                     scanner.close();
                     return;
