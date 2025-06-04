@@ -409,7 +409,8 @@ public class ServiceLinkedList {
                         current.getProblemDescription() + DELIMITER +
                         current.getServiceDate() + DELIMITER +
                         current.getCost() + DELIMITER +
-                        current.getStatus();
+                        current.getStatus() + DELIMITER +
+                        current.getPriority();
                 writer.write(data);
                 writer.newLine();
                 current = current.getNext();
