@@ -109,28 +109,6 @@ public class ServiceLinkedList {
         return lastId + 1;
     }
 
-    // Fungsi tampilDataService untuk menampilkan data service yang ada di memori
-    public void tampilDataService() {
-        if (head == null) {
-            System.out.println("Tidak ada data servis.");
-            return;
-        }
-
-        ServiceNode current = head;
-        while (current != null) {
-            System.out.println("ID: " + current.getServiceId());
-            System.out.println("Nama Pelanggan: " + current.getCustomerName());
-            System.out.println("Jenis Perangkat: " + current.getDeviceType());
-            System.out.println("Deskripsi Masalah: " + current.getProblemDescription());
-            System.out.println("Tanggal Servis: " + current.getServiceDate());
-            System.out.println("Biaya Servis: Rp" + current.getCost());
-            System.out.println("Status: " + current.getStatus());
-            System.out.println("Prioritas: " + current.getPriority());
-            System.out.println("-----------------------------");
-            current = current.getNext();
-        }
-    }
-
     // Fungsi untuk menyimpan data ke file arsip
     private void simpanKeArsip(ServiceNode node) {
         try (FileWriter writer = new FileWriter(ARSIP_FILE, true);
@@ -265,7 +243,6 @@ public class ServiceLinkedList {
     // Fungsi Hapus data service berdasarkan ID
     public void hapusDataServiceById(Scanner scanner) {
         muatDariArsip();
-        tampilDataService();
 
         if (head == null) {
             System.out.println("Tidak ada data servis untuk dihapus.");
@@ -447,12 +424,11 @@ public class ServiceLinkedList {
         while (true) {
             System.out.println("\n=== SISTEM PENCATATAN DATA SERVICE ===");
             System.out.println("1. Tambah Data Service");
-            System.out.println("2. Tampil Data Service (Memory)");
-            System.out.println("3. Baca File Arsip");
-            System.out.println("4. Statistik Service");
-            System.out.println("5. Hapus Data Service berdasarkan ID");
-            System.out.println("6. Hapus Semua Data Service");
-            System.out.println("7. Update Data Service");
+            System.out.println("2. Baca File Arsip");
+            System.out.println("3. Statistik Service");
+            System.out.println("4. Hapus Data Service berdasarkan ID");
+            System.out.println("5. Hapus Semua Data Service");
+            System.out.println("6. Update Data Service");
             System.out.println("0. Keluar");
             System.out.print("Pilih menu: ");
             int pilihan = 0;
@@ -470,25 +446,21 @@ public class ServiceLinkedList {
                     break;
                 case 2:
                     System.out.println("======");
-                    this.tampilDataService();
+                    this.bacaFile();
                     break;
                 case 3:
                     System.out.println("======");
-                    this.bacaFile();
+                    this.statistik();
                     break;
                 case 4:
                     System.out.println("======");
-                    this.statistik();
+                    this.hapusDataServiceById(scanner);
                     break;
                 case 5:
                     System.out.println("======");
-                    this.hapusDataServiceById(scanner);
-                    break;
-                case 6:
-                    System.out.println("======");
                     this.hapusSemuaDataService(scanner);
                     break;
-                case 7:
+                case 6:
                     System.out.println("======");
                     this.updateDataService();
                     break;
