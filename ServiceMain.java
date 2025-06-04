@@ -39,7 +39,7 @@ public class ServiceMain {
                     break;
                 case 4:
                     System.out.println("======");
-                    serviceList.size();
+                    serviceList.statistik();
                     break;
                 case 5:
                     System.out.println("======");
