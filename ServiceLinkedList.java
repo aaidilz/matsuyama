@@ -341,94 +341,74 @@ public class ServiceLinkedList {
         }
     }
 
-    public void updateDataService() {
-        muatDariArsip(); // Ambil data dari file ke memori (linked list)
-
-        Scanner scanner = new Scanner(System.in);
-
-        // Input ID Service yang ingin diupdate
-        System.out.print("Masukkan Service ID yang ingin diupdate: ");
-        int serviceId = 0;
-        try {
-            serviceId = Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("Input ID tidak valid!");
-            return; // keluar dari fungsi jika input salah
+public void updateDataService(Scanner scanner) {
+        System.out.println("\n=== Update Data Service ===");
+        if (head == null) {
+            System.out.println("Data kosong!");
+            return;
         }
-
+        
+        System.out.print("Masukkan ID service: ");
+        int id;
+        try {
+            id = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("ID tidak valid!");
+            return;
+        }
+        
         ServiceNode current = head;
-        boolean ditemukan = false;
-
         while (current != null) {
-            if (current.getServiceId() == serviceId) {
-                ditemukan = true;
-
-                // Tampilkan data lama
-                System.out.println("Data ditemukan:");
+            if (current.getServiceId() == id) {
+                System.out.println("\nData ditemukan:");
                 System.out.println(current);
-
-                // Input data baru, jika kosong maka data lama tetap
-                System.out.print("Nama Customer [" + current.getCustomerName() + "]: ");
+                
+                System.out.println("\nMasukkan data baru (kosongkan jika tidak berubah):");
+                System.out.print("Nama [" + current.getCustomerName() + "]: ");
                 String nama = scanner.nextLine();
-                if (!nama.isEmpty())
-                    current.setCustomerName(nama);
-
-                System.out.print("Tipe Device [" + current.getDeviceType() + "]: ");
-                String device = scanner.nextLine();
-                if (!device.isEmpty())
-                    current.setDeviceType(device);
-
-                System.out.print("Deskripsi Masalah [" + current.getProblemDescription() + "]: ");
+                if (!nama.isEmpty()) current.setCustomerName(nama);
+                
+                System.out.print("Perangkat [" + current.getDeviceType() + "]: ");
+                String perangkat = scanner.nextLine();
+                if (!perangkat.isEmpty()) current.setDeviceType(perangkat);
+                
+                System.out.print("Masalah [" + current.getProblemDescription() + "]: ");
                 String masalah = scanner.nextLine();
-                if (!masalah.isEmpty())
-                    current.setProblemDescription(masalah);
-
+                if (!masalah.isEmpty()) current.setProblemDescription(masalah);
+                
                 System.out.print("Biaya [" + current.getCost() + "]: ");
-                String biayaInput = scanner.nextLine();
-                if (!biayaInput.isEmpty()) {
+                String biayaStr = scanner.nextLine();
+                if (!biayaStr.isEmpty()) {
                     try {
-                        current.setCost(Double.parseDouble(biayaInput));
+                        double biaya = Double.parseDouble(biayaStr);
+                        if (biaya >= 0) current.setCost(biaya);
+                        else System.out.println("Biaya tidak valid, data tidak diubah");
                     } catch (NumberFormatException e) {
-                        System.out.println("Biaya tidak valid, tidak diubah.");
+                        System.out.println("Input tidak valid, data tidak diubah");
                     }
                 }
-
-                // Status menggunakan pilihan
-                System.out.println("Status sekarang: [" + current.getStatus() + "]");
+                
+                System.out.println("Status saat ini: " + current.getStatus());
                 System.out.println("Pilih status baru:");
-                current.setStatus(pilihStatusBaru(scanner));
+                System.out.println("1. pending");
+                System.out.println("2. on_going");
+                System.out.println("3. completed");
+                System.out.print("Pilihan (1-3): ");
+                String statusPilihan = scanner.nextLine();
+                switch (statusPilihan) {
+                    case "1": current.setStatus("pending"); break;
+                    case "2": current.setStatus("on_going"); break;
+                    case "3": current.setStatus("completed"); break;
+                    default: System.out.println("Status tidak berubah");
+                }
 
-                System.out.println("Data berhasil diupdate.");
-                break;
+                // simpanKeArsip();
+                System.out.println("\nData berhasil diupdate!");
+                return;
             }
             current = current.getNext();
         }
-
-        if (!ditemukan) {
-            System.out.println("Service ID " + serviceId + " tidak ditemukan.");
-        }
-        tulisUlangSeluruhArsip(); // Simpan semua perubahan ke file
-    }
-
-    private String pilihStatusBaru(Scanner scanner) {
-        while (true) {
-            System.out.println("1. pending");
-            System.out.println("2. on_going");
-            System.out.println("3. completed");
-            System.out.print("Pilih (1-3): ");
-            String pilih = scanner.nextLine();
-
-            switch (pilih) {
-                case "1":
-                    return "pending";
-                case "2":
-                    return "on_going";
-                case "3":
-                    return "completed";
-                default:
-                    System.out.println("Pilihan tidak valid, coba lagi.");
-            }
-        }
+        System.out.println("Data tidak ditemukan!");
     }
 
     // Helper untuk menyimpan ulang (menimpa) semua data dari linked list ke arsip
@@ -496,7 +476,7 @@ public class ServiceLinkedList {
                     break;
                 case 6:
                     System.out.println("======");
-                    this.updateDataService();
+                    this.updateDataService(scanner);;
                     break;
                 case 0:
                     System.out.println("======");
