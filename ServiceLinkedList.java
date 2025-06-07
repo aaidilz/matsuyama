@@ -8,9 +8,13 @@ public class ServiceLinkedList {
     private static final String ARSIP_FILE = "data_service.txt";
     private static final String DELIMITER = "|";
 
+    public ServiceLinkedList() {
+        this.head = null;
+        muatDariArsip();
+    }
+
     // Fungsi size untuk menghitung total dan per status
     public void statistik() {
-        muatDariArsip(); // Isi linked list dari file
 
         int total = 0;
         int pending = 0;
@@ -20,25 +24,17 @@ public class ServiceLinkedList {
         ServiceNode current = head;
         while (current != null) {
             total++;
-            String status = current.getStatus().toLowerCase();
 
-            switch (status) {
-                case "pending":
-                    pending++;
-                    break;
-                case "on_going":
-                case "ongoing": // jika ada variasi penulisan
-                    onGoing++;
-                    break;
-                case "completed":
-                    completed++;
-                    break;
+            switch (current.getStatus()) {
+                case "pending":pending++; break;
+                case "on_going": onGoing++; break;
+                case "completed": completed++; break;
             }
             current = current.getNext();
         }
 
         // Tampilkan hasil
-        System.out.println("===== Statistik Layanan =====");
+        System.out.println("\n===== Statistik Layanan =====");
         System.out.println("Total data      : " + total);
         System.out.println("Pending         : " + pending);
         System.out.println("On Going        : " + onGoing);
