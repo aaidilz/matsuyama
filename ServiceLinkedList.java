@@ -273,71 +273,104 @@ public class ServiceLinkedList {
         }
     }
 
-    // Fungsi Hapus data service berdasarkan ID
-    public void hapusDataServiceById(Scanner scanner) {
-        muatDariArsip();
-
-        if (head == null) {
-            System.out.println("Tidak ada data servis untuk dihapus.");
-            return;
+    // ======================= HAPUS DATA =======================
+    private void hapusHead() {
+        if (head != null) {
+            head = head.getNext();
+            //simpanKeArsip();
+            System.out.println("Data berhasil dihapus (head)!");
         }
+    }
 
-        System.out.print("Masukkan ID servis yang ingin dihapus: ");
-        int id = Integer.parseInt(scanner.nextLine());
+    private void hapusMid(ServiceNode before, ServiceNode target) {
+        if (before != null && target != null) {
+            before.setNext(target.getNext()); // Lewati node target
+            //simpanKeArsip();
+            System.out.println("Data berhasil dihapus (mid)!");
+        }
+    }
+
+    private void hapusTail() {
+        if (head == null) return;
 
         ServiceNode current = head;
-        ServiceNode prev = null;
+        ServiceNode before = null;
 
-        while (current != null) {
-            if (current.getServiceId() == id) {
-                System.out.print("Apakah Anda yakin ingin menghapus data dengan ID " + id + "? (y/n): ");
-                String confirm = scanner.nextLine();
-                if (confirm.equalsIgnoreCase("y")) {
-                    if (prev == null) {
-                        head = current.getNext();
-                    } else {
-                        prev.setNext(current.getNext());
-                    }
-                    tulisUlangSeluruhArsip();
-                    System.out.println("Data berhasil dihapus.");
-                } else {
-                    System.out.println("Penghapusan dibatalkan.");
-                }
-                return;
-            }
-            prev = current;
+        while (current.getNext() != null) {
+            before = current;
             current = current.getNext();
         }
 
-        System.out.println("Data dengan ID tersebut tidak ditemukan.");
+        if (before == null) {
+            head = null;
+        } else {
+            before.setNext(null);
+        }
+        //simpanKeArsip();
+        System.out.println("Data berhasil dihapus (tail)!");
     }
 
-    // Fungsi Hapus semua data service
-    public void hapusSemuaDataService(Scanner scanner) {
-        muatDariArsip();
-
+    public void hapusById(Scanner scanner) {
         if (head == null) {
-            System.out.println("Tidak ada data servis untuk dihapus.");
+            System.out.println("\nData kosong!");
             return;
         }
 
-        System.out.print("Apakah Anda yakin ingin menghapus SEMUA data servis? (y/n): ");
-        String confirm = scanner.nextLine();
+        System.out.print("\nMasukkan ID service: ");
+        int id;
+        try {
+            id = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("ID tidak valid!");
+            return;
+        }
 
-        if (confirm.equalsIgnoreCase("y")) {
-            head = null;
+        ServiceNode current = head;
+        ServiceNode before = null;
 
-            // Kosongkan isi file
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARSIP_FILE))) {
-                writer.write(""); // tulis kosong
-            } catch (IOException e) {
-                System.err.println("Gagal menghapus arsip: " + e.getMessage());
+        while (current != null) {
+            if (current.getServiceId() == id) {
+                System.out.println("\nData ditemukan:");
+                System.out.println(current);
+                System.out.print("Yakin ingin menghapus? (y/n): ");
+                if (!scanner.nextLine().equalsIgnoreCase("y")) {
+                    System.out.println("Penghapusan dibatalkan");
+                    return;
+                }
+
+                if (current == head && current.getNext() == null) {
+                    head = null;
+                    //simpanKeArsip();
+                    System.out.println("Data berhasil dihapus!");
+                } else if (current == head) {
+                    hapusHead();
+                } else if (current.getNext() == null) {
+                    hapusTail();
+                } else {
+                    hapusMid(before, current);
+                }
                 return;
             }
+            before = current;
+            current = current.getNext();
+        }
 
-            System.out.println("Semua data servis berhasil dihapus.");
+        System.out.println("Data tidak ditemukan!");
+    }
+
+    public void hapusAll(Scanner scanner) {
+        if (head == null) {
+            System.out.println("\nData kosong!");
+            return;
+        }
+
+        System.out.print("\nYakin ingin menghapus semua data? (y/n): ");
+        if (scanner.nextLine().equalsIgnoreCase("y")) {
+            head = null;
+            //simpanKeArsip();
+            System.out.println("Semua data berhasil dihapus!");
         } else {
-            System.out.println("Penghapusan semua data dibatalkan.");
+            System.out.println("Penghapusan dibatalkan");
         }
     }
 
@@ -468,11 +501,11 @@ public void updateDataService(Scanner scanner) {
                     break;
                 case 4:
                     System.out.println("======");
-                    this.hapusDataServiceById(scanner);
+                    this.hapusById(scanner);;
                     break;
                 case 5:
                     System.out.println("======");
-                    this.hapusSemuaDataService(scanner);
+                    this.hapusAll(scanner);
                     break;
                 case 6:
                     System.out.println("======");
