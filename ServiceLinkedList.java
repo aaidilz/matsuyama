@@ -47,66 +47,93 @@ public class ServiceLinkedList {
     }
 
     // Fungsi tambahDataService untuk menambahkan data service baru
+    // ======================= TAMBAH DATA =======================
     public void tambahDataService(Scanner scanner) {
-        System.out.println("Masukkan nama pelanggan:");
-        String nama = scanner.nextLine();
-
-        System.out.println("Masukkan jenis perangkat:");
-        String perangkat = scanner.nextLine();
-
-        System.out.println("Masukkan deskripsi masalah:");
-        String masalah = scanner.nextLine();
-
-        String prioritas;
-        while (true) {
-            System.out.println("Masukkan prioritas (mudah, menengah, sulit):");
-            prioritas = scanner.nextLine().toLowerCase();
-            if (prioritas.equals("mudah") || prioritas.equals("menengah") || prioritas.equals("sulit")) {
-            break;
-            } else {
-            System.out.println("Prioritas tidak valid. Harap masukkan salah satu dari: mudah, menengah, sulit.");
+        try {
+            System.out.println("\n=== Tambah Data Service ===");
+            System.out.println("Masukkan nama pelanggan:");
+            String nama = scanner.nextLine();
+        
+            System.out.println("Masukkan jenis perangkat:");
+            String perangkat = scanner.nextLine();
+        
+            System.out.println("Masukkan deskripsi masalah:");
+            String masalah = scanner.nextLine();
+        
+            String prioritas;
+            while (true) {
+                System.out.println("Masukkan prioritas (mudah, menengah, sulit):");
+                prioritas = scanner.nextLine().toLowerCase();
+                if (prioritas.equals("mudah") || prioritas.equals("menengah") || prioritas.equals("sulit")) {
+                    break;
+                } else {
+                    System.out.println("Prioritas tidak valid!");
+                }
             }
-        }
-
-        System.out.println("Masukkan biaya servis:");
-        double biaya = 0;
-        while (true) {
-            try {
-                biaya = Double.parseDouble(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Masukkan angka valid untuk biaya servis:");
+        
+            System.out.println("Masukkan biaya servis:");
+            double biaya = 0;
+            while (true) {
+                try {
+                    biaya = Double.parseDouble(scanner.nextLine());
+                    if (biaya < 0) throw new NumberFormatException();
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("Masukkan angka yang valid:");
+                }
             }
-        }
-
-        // Buat node baru
-        ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya, prioritas);
-
-        // Set ID otomatis
-        newNode.setServiceId(generateNewId());
-
-        // Tambahkan node ke akhir linked list
-        if (head == null) {
-            head = newNode;
-        } else {
-            ServiceNode current = head;
-            while (current.getNext() != null) {
-                current = current.getNext();
+        
+            ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya, prioritas);
+            newNode.setServiceId(generateNewId());
+            
+            // Penambahan berdasarkan prioritas
+            if (head == null) {
+                head = newNode;
+            } else if (prioritas.equals("mudah")) {
+                newNode.setNext(head);
+                head = newNode;
+            } else if (prioritas.equals("menengah")) {
+                ServiceNode current = head;
+                ServiceNode prev = null;
+                
+                while (current != null && !current.getPriority().equals("sulit")) {
+                    prev = current;
+                    current = current.getNext();
+                }
+                
+                if (prev == null) {
+                    newNode.setNext(head);
+                    head = newNode;
+                } else {
+                    newNode.setNext(current);
+                    prev.setNext(newNode);
+                }
+            } else { // sulit
+                ServiceNode current = head;
+                while (current.getNext() != null) {
+                    current = current.getNext();
+                }
+                current.setNext(newNode);
             }
-            current.setNext(newNode);
+        
+            // simpanKeArsip();
+            System.out.println("\nData berhasil ditambahkan!");
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
         }
-
-        // Otomatis simpan ke arsip
-        simpanKeArsip(newNode);
-
-        System.out.println("Data servis berhasil ditambahkan dan disimpan ke arsip");
     }
 
     // Fungsi generateNewId untuk menghasilkan ID baru
     private int generateNewId() {
-        // Baca ID terakhir dari file arsip
-        int lastId = bacaIdTerakhirDariArsip();
-        return lastId + 1;
+        int maxId = 0;
+        ServiceNode current = head;
+        while (current != null) {
+            if (current.getServiceId() > maxId) {
+                maxId = current.getServiceId();
+            }
+            current = current.getNext();
+        }
+        return maxId + 1;
     }
 
     // Fungsi untuk menyimpan data ke file arsip
