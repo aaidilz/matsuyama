@@ -53,13 +53,13 @@ public class ServiceLinkedList {
             System.out.println("\n=== Tambah Data Service ===");
             System.out.println("Masukkan nama pelanggan:");
             String nama = scanner.nextLine();
-        
+
             System.out.println("Masukkan jenis perangkat:");
             String perangkat = scanner.nextLine();
-        
+
             System.out.println("Masukkan deskripsi masalah:");
             String masalah = scanner.nextLine();
-        
+
             String prioritas;
             while (true) {
                 System.out.println("Masukkan prioritas (mudah, menengah, sulit):");
@@ -70,37 +70,45 @@ public class ServiceLinkedList {
                     System.out.println("Prioritas tidak valid!");
                 }
             }
-        
+
             System.out.println("Masukkan biaya servis:");
             double biaya = 0;
             while (true) {
                 try {
                     biaya = Double.parseDouble(scanner.nextLine());
-                    if (biaya < 0) throw new NumberFormatException();
+                    if (biaya < 0)
+                        throw new NumberFormatException();
                     break;
                 } catch (NumberFormatException e) {
                     System.out.println("Masukkan angka yang valid:");
                 }
             }
-        
+
             ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya, prioritas);
             newNode.setServiceId(generateNewId());
-            
+
             // Penambahan berdasarkan prioritas
+
+            // check apakah arsip sudah ada, jika belum buat baru
             if (head == null) {
                 head = newNode;
+
+                // kalau prioritas adalah "mudah", langsung simpan ke head paling depan
             } else if (prioritas.equals("mudah")) {
                 newNode.setNext(head);
                 head = newNode;
+
+                // kalau prioritas adalah "menengah".
             } else if (prioritas.equals("menengah")) {
                 ServiceNode current = head;
                 ServiceNode prev = null;
-                
+
+                // Jalan terus ke depan sampai menemukan node dengan prioritas "sulit"
                 while (current != null && !current.getPriority().equals("sulit")) {
                     prev = current;
                     current = current.getNext();
                 }
-                
+
                 if (prev == null) {
                     newNode.setNext(head);
                     head = newNode;
@@ -108,14 +116,16 @@ public class ServiceLinkedList {
                     newNode.setNext(current);
                     prev.setNext(newNode);
                 }
-            } else { // sulit
+                // Karena ini yang paling berat, maka kita tempatkan pelanggan ini di paling
+                // akhir.
+            } else {
                 ServiceNode current = head;
                 while (current.getNext() != null) {
                     current = current.getNext();
                 }
                 current.setNext(newNode);
             }
-        
+
             // simpanKeArsip();
             System.out.println("\nData berhasil ditambahkan!");
         } catch (Exception e) {
