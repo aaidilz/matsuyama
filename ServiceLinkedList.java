@@ -62,14 +62,14 @@ public class ServiceLinkedList {
             System.out.println("Masukkan deskripsi masalah:");
             String masalah = scanner.nextLine();
 
-            String prioritas;
+            String difficulty;
             while (true) {
-                System.out.println("Masukkan prioritas (mudah, menengah, sulit):");
-                prioritas = scanner.nextLine().toLowerCase();
-                if (prioritas.equals("mudah") || prioritas.equals("menengah") || prioritas.equals("sulit")) {
+                System.out.println("Masukkan difficulty (mudah, menengah, sulit):");
+                difficulty = scanner.nextLine().toLowerCase();
+                if (difficulty.equals("mudah") || difficulty.equals("menengah") || difficulty.equals("sulit")) {
                     break;
                 } else {
-                    System.out.println("Prioritas tidak valid!");
+                    System.out.println("difficulty tidak valid!");
                 }
             }
 
@@ -86,27 +86,27 @@ public class ServiceLinkedList {
                 }
             }
 
-            ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya, prioritas);
+            ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya, difficulty);
             newNode.setServiceId(generateNewId());
 
-            // Penambahan berdasarkan prioritas
+            // Penambahan berdasarkan difficulty
 
             // check apakah arsip sudah ada, jika belum buat baru
             if (head == null) {
                 head = newNode;
 
-                // kalau prioritas adalah "mudah", langsung simpan ke head paling depan
-            } else if (prioritas.equals("mudah")) {
+                // kalau difficulty adalah "mudah", langsung simpan ke head paling depan
+            } else if (difficulty.equals("mudah")) {
                 newNode.setNext(head);
                 head = newNode;
 
-                // kalau prioritas adalah "menengah".
-            } else if (prioritas.equals("menengah")) {
+                // kalau difficulty adalah "menengah".
+            } else if (difficulty.equals("menengah")) {
                 ServiceNode current = head;
                 ServiceNode prev = null;
 
-                // Jalan terus ke depan sampai menemukan node dengan prioritas "sulit"
-                while (current != null && !current.getPriority().equals("sulit")) {
+                // Jalan terus ke depan sampai menemukan node dengan difficulty "sulit"
+                while (current != null && !current.getDifficulty().equals("sulit")) {
                     prev = current;
                     current = current.getNext();
                 }
@@ -172,7 +172,7 @@ public class ServiceLinkedList {
                         current.getServiceDate() + DELIMITER +
                         current.getCost() + DELIMITER +
                         current.getStatus() + DELIMITER +
-                        current.getPriority();
+                        current.getDifficulty();
                 writer.write(data);
                 writer.newLine();
                 current = current.getNext();
@@ -202,7 +202,7 @@ public class ServiceLinkedList {
                     System.out.println("Tanggal Servis: " + data[4]);
                     System.out.println("Biaya Servis: Rp" + data[5]);
                     System.out.println("Status: " + data[6]);
-                    System.out.println("Prioritas: " + data[7]);
+                    System.out.println("difficulty: " + data[7]);
                     System.out.println("-----------------------------");
                 }
             }
@@ -233,9 +233,9 @@ public class ServiceLinkedList {
                         LocalDate tanggal = LocalDate.parse(data[4]); // Konversi dari String ke LocalDate
                         double biaya = Double.parseDouble(data[5]);
                         String status = data[6];
-                        String prioritas = data[7];
+                        String difficulty = data[7];
 
-                        ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya, prioritas);
+                        ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya, difficulty);
                         newNode.setServiceId(id);
                         newNode.setServiceDate(tanggal);
                         newNode.setStatus(status);
@@ -498,23 +498,23 @@ public class ServiceLinkedList {
         }
     }
 
-    public void filterByPriority(Scanner scanner) {
-        System.out.println("\n=== Filter Berdasarkan Prioritas ===");
+    public void filterByDifficulty(Scanner scanner) {
+        System.out.println("\n=== Filter Berdasarkan difficulty ===");
         System.out.println("1. mudah");
         System.out.println("2. menengah");
         System.out.println("3. sulit");
-        System.out.print("Pilih prioritas (1-3): ");
+        System.out.print("Pilih difficulty (1-3): ");
 
-        String prioritas;
+        String difficulty;
         switch (scanner.nextLine()) {
             case "1":
-                prioritas = "mudah";
+                difficulty = "mudah";
                 break;
             case "2":
-                prioritas = "menengah";
+                difficulty = "menengah";
                 break;
             case "3":
-                prioritas = "sulit";
+                difficulty = "sulit";
                 break;
             default:
                 System.out.println("Pilihan tidak valid!");
@@ -527,7 +527,7 @@ public class ServiceLinkedList {
 
         System.out.println("\nHasil Filter:");
         while (current != null) {
-            if (current.getPriority().equals(prioritas)) {
+            if (current.getDifficulty().equals(difficulty)) {
                 System.out.println(current);
                 System.out.println("-------------------");
                 ditemukan = true;
@@ -537,7 +537,7 @@ public class ServiceLinkedList {
         }
 
         if (!ditemukan) {
-            System.out.println("Tidak ada data dengan prioritas " + prioritas);
+            System.out.println("Tidak ada data dengan difficulty " + difficulty);
         } else {
             System.out.println("Total ditemukan: " + count);
         }
@@ -546,7 +546,7 @@ public class ServiceLinkedList {
     public void filterData(Scanner scanner) {
         System.out.println("\n=== Filter Data Service ===");
         System.out.println("1. Berdasarkan Status");
-        System.out.println("2. Berdasarkan Prioritas");
+        System.out.println("2. Berdasarkan difficulty");
         System.out.print("Pilih filter (1-2): ");
 
         String pilihan = scanner.nextLine();
@@ -555,7 +555,7 @@ public class ServiceLinkedList {
                 filterByStatus(scanner);
                 break;
             case "2":
-                filterByPriority(scanner);
+                filterByDifficulty(scanner);
                 break;
             default:
                 System.out.println("Pilihan tidak valid!");
