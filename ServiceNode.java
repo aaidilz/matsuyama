@@ -11,19 +11,6 @@ public class ServiceNode {
     private String difficulty;
     private ServiceNode next;
 
-    // Constructor for default service
-    public ServiceNode() {
-        this.serviceId = 1;
-        this.customerName = "";
-        this.deviceType = "";
-        this.problemDescription = "";
-        this.serviceDate = LocalDate.now();
-        this.cost = 0.0;
-        this.status = "pending";
-        this.difficulty = "";
-        this.next = null;
-    }
-
     // Constructor for new service
     public ServiceNode(String customerName, String deviceType, String problemDescription, double cost, String difficulty) {
         this.customerName = customerName;

@@ -128,7 +128,7 @@ public class ServiceLinkedList {
                 current.setNext(newNode);
             }
 
-            // simpanKeArsip();
+            simpanKeArsip();
             System.out.println("\nData berhasil ditambahkan!");
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -266,7 +266,7 @@ public class ServiceLinkedList {
     private void hapusHead() {
         if (head != null) {
             head = head.getNext();
-            // simpanKeArsip();
+            simpanKeArsip();
             System.out.println("Data berhasil dihapus (head)!");
         }
     }
@@ -274,7 +274,7 @@ public class ServiceLinkedList {
     private void hapusMid(ServiceNode before, ServiceNode target) {
         if (before != null && target != null) {
             before.setNext(target.getNext()); // Lewati node target
-            // simpanKeArsip();
+            simpanKeArsip();
             System.out.println("Data berhasil dihapus (mid)!");
         }
     }
@@ -296,7 +296,7 @@ public class ServiceLinkedList {
         } else {
             before.setNext(null);
         }
-        // simpanKeArsip();
+        simpanKeArsip();
         System.out.println("Data berhasil dihapus (tail)!");
     }
 
@@ -330,7 +330,7 @@ public class ServiceLinkedList {
 
                 if (current == head && current.getNext() == null) {
                     head = null;
-                    // simpanKeArsip();
+                    simpanKeArsip();
                     System.out.println("Data berhasil dihapus!");
                 } else if (current == head) {
                     hapusHead();
@@ -557,24 +557,16 @@ public class ServiceLinkedList {
 
     public void hapusMenu(Scanner scanner) {
         System.out.println("\n=== Hapus Data Service ===");
-        System.out.println("1. Hapus head");
-        System.out.println("2. Hapus tail");
-        System.out.println("3. Hapus berdasarkan ID");
-        System.out.println("4. Hapus semua data");
-        System.out.print("Pilih opsi (1-4): ");
+        System.out.println("1. Hapus berdasarkan ID");
+        System.out.println("2. Hapus semua data");
+        System.out.print("Pilih opsi (1-2): ");
 
         String pilihan = scanner.nextLine();
         switch (pilihan) {
             case "1":
-                hapusHead();
-                break;
-            case "2":
-                hapusTail();
-                break;
-            case "3":
                 hapusById(scanner);
                 break;
-            case "4":
+            case "2":
                 hapusAll(scanner);
                 break;
             default:
@@ -583,6 +575,16 @@ public class ServiceLinkedList {
     }
 
     public void mainMenu() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+        System.out.println("\n[Shutdown Hook] Program akan berhenti, menyimpan data secara otomatis...");
+        simpanKeArsip();
+        System.out.println("[Shutdown Hook] Data berhasil disimpan.");
+        }));
+
+        System.out.println("Selamat datang di Sistem Pencatatan Service!");
+        System.out.println("Data akan disimpan secara otomatis saat program ditutup.");
+        System.out.println("Silakan pilih menu berikut untuk melanjutkan:");
+
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("\n=== SISTEM PENCATATAN DATA SERVICE ===");
