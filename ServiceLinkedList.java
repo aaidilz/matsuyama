@@ -128,7 +128,7 @@ public class ServiceLinkedList {
                 current.setNext(newNode);
             }
 
-            simpanKeArsip();
+            //simpanKeArsip();
             System.out.println("\nData berhasil ditambahkan!");
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -266,7 +266,7 @@ public class ServiceLinkedList {
     private void hapusHead() {
         if (head != null) {
             head = head.getNext();
-            simpanKeArsip();
+            //simpanKeArsip();
             System.out.println("Data berhasil dihapus (head)!");
         }
     }
@@ -274,7 +274,7 @@ public class ServiceLinkedList {
     private void hapusMid(ServiceNode before, ServiceNode target) {
         if (before != null && target != null) {
             before.setNext(target.getNext()); // Lewati node target
-            simpanKeArsip();
+            //simpanKeArsip();
             System.out.println("Data berhasil dihapus (mid)!");
         }
     }
@@ -296,7 +296,7 @@ public class ServiceLinkedList {
         } else {
             before.setNext(null);
         }
-        simpanKeArsip();
+        //simpanKeArsip();
         System.out.println("Data berhasil dihapus (tail)!");
     }
 
@@ -330,7 +330,7 @@ public class ServiceLinkedList {
 
                 if (current == head && current.getNext() == null) {
                     head = null;
-                    simpanKeArsip();
+                    //simpanKeArsip();
                     System.out.println("Data berhasil dihapus!");
                 } else if (current == head) {
                     hapusHead();
@@ -436,7 +436,7 @@ public class ServiceLinkedList {
                     default:
                         System.out.println("Status tidak berubah");
                 }
-                simpanKeArsip(); // menyimpan seluruh linked list ke file
+                //simpanKeArsip(); // menyimpan seluruh linked list ke file
                 System.out.println("\nData berhasil diupdate!");
                 return;
             }
