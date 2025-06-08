@@ -8,9 +8,13 @@ public class ServiceLinkedList {
     private static final String ARSIP_FILE = "data_service.txt";
     private static final String DELIMITER = "|";
 
+    public ServiceLinkedList() {
+        this.head = null;
+        muatDariArsip();
+    }
+
     // Fungsi size untuk menghitung total dan per status
     public void statistik() {
-        muatDariArsip(); // Isi linked list dari file
 
         int total = 0;
         int pending = 0;
@@ -20,103 +24,122 @@ public class ServiceLinkedList {
         ServiceNode current = head;
         while (current != null) {
             total++;
-            String status = current.getStatus().toLowerCase();
 
-            switch (status) {
-                case "pending":
-                    pending++;
-                    break;
-                case "on_going":
-                case "ongoing": // jika ada variasi penulisan
-                onGoing++;
-                break;
-                case "completed":
-                completed++;
-                break;
+            switch (current.getStatus()) {
+                case "pending":pending++; break;
+                case "on_going": onGoing++; break;
+                case "completed": completed++; break;
             }
             current = current.getNext();
         }
 
         // Tampilkan hasil
-        System.out.println("===== Statistik Layanan =====");
+        System.out.println("\n===== Statistik Layanan =====");
         System.out.println("Total data      : " + total);
         System.out.println("Pending         : " + pending);
         System.out.println("On Going        : " + onGoing);
         System.out.println("Completed       : " + completed);
         System.out.println("=============================");
     }
-    
+
     // Fungsi tambahDataService untuk menambahkan data service baru
+    // ======================= TAMBAH DATA =======================
     public void tambahDataService(Scanner scanner) {
-        System.out.println("Masukkan nama pelanggan:");
-        String nama = scanner.nextLine();
+        try {
+            System.out.println("\n=== Tambah Data Service ===");
+            System.out.println("Masukkan nama pelanggan:");
+            String nama = scanner.nextLine();
 
-        System.out.println("Masukkan jenis perangkat:");
-        String perangkat = scanner.nextLine();
+            System.out.println("Masukkan jenis perangkat:");
+            String perangkat = scanner.nextLine();
 
-        System.out.println("Masukkan deskripsi masalah:");
-        String masalah = scanner.nextLine();
+            System.out.println("Masukkan deskripsi masalah:");
+            String masalah = scanner.nextLine();
 
-        System.out.println("Masukkan biaya servis:");
-        double biaya = 0;
-        while (true) {
-            try {
-                biaya = Double.parseDouble(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Masukkan angka valid untuk biaya servis:");
+            String prioritas;
+            while (true) {
+                System.out.println("Masukkan prioritas (mudah, menengah, sulit):");
+                prioritas = scanner.nextLine().toLowerCase();
+                if (prioritas.equals("mudah") || prioritas.equals("menengah") || prioritas.equals("sulit")) {
+                    break;
+                } else {
+                    System.out.println("Prioritas tidak valid!");
+                }
             }
-        }
 
-        // Buat node baru
-        ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya);
-
-        // Set ID otomatis
-        newNode.setServiceId(generateNewId());
-
-        // Tambahkan node ke akhir linked list
-        if (head == null) {
-            head = newNode;
-        } else {
-            ServiceNode current = head;
-            while (current.getNext() != null) {
-                current = current.getNext();
+            System.out.println("Masukkan biaya servis:");
+            double biaya = 0;
+            while (true) {
+                try {
+                    biaya = Double.parseDouble(scanner.nextLine());
+                    if (biaya < 0)
+                        throw new NumberFormatException();
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("Masukkan angka yang valid:");
+                }
             }
-            current.setNext(newNode);
+
+            ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya, prioritas);
+            newNode.setServiceId(generateNewId());
+
+            // Penambahan berdasarkan prioritas
+
+            // check apakah arsip sudah ada, jika belum buat baru
+            if (head == null) {
+                head = newNode;
+
+                // kalau prioritas adalah "mudah", langsung simpan ke head paling depan
+            } else if (prioritas.equals("mudah")) {
+                newNode.setNext(head);
+                head = newNode;
+
+                // kalau prioritas adalah "menengah".
+            } else if (prioritas.equals("menengah")) {
+                ServiceNode current = head;
+                ServiceNode prev = null;
+
+                // Jalan terus ke depan sampai menemukan node dengan prioritas "sulit"
+                while (current != null && !current.getPriority().equals("sulit")) {
+                    prev = current;
+                    current = current.getNext();
+                }
+
+                if (prev == null) {
+                    newNode.setNext(head);
+                    head = newNode;
+                } else {
+                    newNode.setNext(current);
+                    prev.setNext(newNode);
+                }
+                // Karena ini yang paling berat, maka kita tempatkan pelanggan ini di paling
+                // akhir.
+            } else {
+                ServiceNode current = head;
+                while (current.getNext() != null) {
+                    current = current.getNext();
+                }
+                current.setNext(newNode);
+            }
+
+            // simpanKeArsip();
+            System.out.println("\nData berhasil ditambahkan!");
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
         }
-
-        // Otomatis simpan ke arsip
-        simpanKeArsip(newNode);
-
-        System.out.println("Data servis berhasil ditambahkan dan disimpan ke arsip");
     }
 
     // Fungsi generateNewId untuk menghasilkan ID baru
     private int generateNewId() {
-        // Baca ID terakhir dari file arsip
-        int lastId = bacaIdTerakhirDariArsip();
-        return lastId + 1;
-    }
-
-    // Fungsi tampilDataService untuk menampilkan data service yang ada di memori
-    public void tampilDataService() {
-        if (head == null) {
-            System.out.println("Tidak ada data servis.");
-            return;
-        }
-
+        int maxId = 0;
         ServiceNode current = head;
         while (current != null) {
-            System.out.println("ID: " + current.getServiceId());
-            System.out.println("Nama Pelanggan: " + current.getCustomerName());
-            System.out.println("Jenis Perangkat: " + current.getDeviceType());
-            System.out.println("Deskripsi Masalah: " + current.getProblemDescription());
-            System.out.println("Tanggal Servis: " + current.getServiceDate());
-            System.out.println("Biaya Servis: Rp" + current.getCost());
-            System.out.println("Status: " + current.getStatus());
-            System.out.println("-----------------------------");
+            if (current.getServiceId() > maxId) {
+                maxId = current.getServiceId();
+            }
             current = current.getNext();
         }
+        return maxId + 1;
     }
 
     // Fungsi untuk menyimpan data ke file arsip
@@ -130,7 +153,8 @@ public class ServiceLinkedList {
                     node.getProblemDescription() + DELIMITER +
                     node.getServiceDate().toString() + DELIMITER +
                     node.getCost() + DELIMITER +
-                    node.getStatus();
+                    node.getStatus() + DELIMITER +
+                    node.getPriority();
 
             bufferedWriter.write(data);
             bufferedWriter.newLine();
@@ -151,7 +175,7 @@ public class ServiceLinkedList {
 
             while ((line = bufferedReader.readLine()) != null) {
                 String[] data = line.split("\\" + DELIMITER);
-                if (data.length == 7) {
+                if (data.length == 8) {
                     System.out.println("ID: " + data[0]);
                     System.out.println("Nama Pelanggan: " + data[1]);
                     System.out.println("Jenis Perangkat: " + data[2]);
@@ -159,6 +183,7 @@ public class ServiceLinkedList {
                     System.out.println("Tanggal Servis: " + data[4]);
                     System.out.println("Biaya Servis: Rp" + data[5]);
                     System.out.println("Status: " + data[6]);
+                    System.out.println("Prioritas: " + data[7]);
                     System.out.println("-----------------------------");
                 }
             }
@@ -210,7 +235,7 @@ public class ServiceLinkedList {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split("\\" + DELIMITER);
-                if (data.length == 7) {
+                if (data.length == 8) {
                     try {
                         int id = Integer.parseInt(data[0]);
                         String nama = data[1];
@@ -219,8 +244,9 @@ public class ServiceLinkedList {
                         LocalDate tanggal = LocalDate.parse(data[4]); // Konversi dari String ke LocalDate
                         double biaya = Double.parseDouble(data[5]);
                         String status = data[6];
+                        String prioritas = data[7];
 
-                        ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya);
+                        ServiceNode newNode = new ServiceNode(nama, perangkat, masalah, biaya, prioritas);
                         newNode.setServiceId(id);
                         newNode.setServiceDate(tanggal);
                         newNode.setStatus(status);
@@ -247,156 +273,175 @@ public class ServiceLinkedList {
         }
     }
 
-    // Fungsi Hapus data service berdasarkan ID
-    public void hapusDataServiceById(Scanner scanner) {
-        muatDariArsip();
-        tampilDataService();
+    // ======================= HAPUS DATA =======================
+    private void hapusHead() {
+        if (head != null) {
+            head = head.getNext();
+            //simpanKeArsip();
+            System.out.println("Data berhasil dihapus (head)!");
+        }
+    }
 
+    private void hapusMid(ServiceNode before, ServiceNode target) {
+        if (before != null && target != null) {
+            before.setNext(target.getNext()); // Lewati node target
+            //simpanKeArsip();
+            System.out.println("Data berhasil dihapus (mid)!");
+        }
+    }
+
+    private void hapusTail() {
+        if (head == null) return;
+
+        ServiceNode current = head;
+        ServiceNode before = null;
+
+        while (current.getNext() != null) {
+            before = current;
+            current = current.getNext();
+        }
+
+        if (before == null) {
+            head = null;
+        } else {
+            before.setNext(null);
+        }
+        //simpanKeArsip();
+        System.out.println("Data berhasil dihapus (tail)!");
+    }
+
+    public void hapusById(Scanner scanner) {
         if (head == null) {
-            System.out.println("Tidak ada data servis untuk dihapus.");
+            System.out.println("\nData kosong!");
             return;
         }
 
-        System.out.print("Masukkan ID servis yang ingin dihapus: ");
-        int id = Integer.parseInt(scanner.nextLine());
+        System.out.print("\nMasukkan ID service: ");
+        int id;
+        try {
+            id = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("ID tidak valid!");
+            return;
+        }
 
         ServiceNode current = head;
-        ServiceNode prev = null;
+        ServiceNode before = null;
 
         while (current != null) {
             if (current.getServiceId() == id) {
-                System.out.print("Apakah Anda yakin ingin menghapus data dengan ID " + id + "? (y/n): ");
-                String confirm = scanner.nextLine();
-                if (confirm.equalsIgnoreCase("y")) {
-                    if (prev == null) {
-                        head = current.getNext();
-                    } else {
-                        prev.setNext(current.getNext());
-                    }
-                    tulisUlangSeluruhArsip();
-                    System.out.println("Data berhasil dihapus.");
+                System.out.println("\nData ditemukan:");
+                System.out.println(current);
+                System.out.print("Yakin ingin menghapus? (y/n): ");
+                if (!scanner.nextLine().equalsIgnoreCase("y")) {
+                    System.out.println("Penghapusan dibatalkan");
+                    return;
+                }
+
+                if (current == head && current.getNext() == null) {
+                    head = null;
+                    //simpanKeArsip();
+                    System.out.println("Data berhasil dihapus!");
+                } else if (current == head) {
+                    hapusHead();
+                } else if (current.getNext() == null) {
+                    hapusTail();
                 } else {
-                    System.out.println("Penghapusan dibatalkan.");
+                    hapusMid(before, current);
                 }
                 return;
             }
-            prev = current;
+            before = current;
             current = current.getNext();
         }
 
-        System.out.println("Data dengan ID tersebut tidak ditemukan.");
+        System.out.println("Data tidak ditemukan!");
     }
-    
-    // Fungsi Hapus semua data service
-    public void hapusSemuaDataService(Scanner scanner) {
-        muatDariArsip();
-        
+
+    public void hapusAll(Scanner scanner) {
         if (head == null) {
-            System.out.println("Tidak ada data servis untuk dihapus.");
+            System.out.println("\nData kosong!");
             return;
         }
 
-        System.out.print("Apakah Anda yakin ingin menghapus SEMUA data servis? (y/n): ");
-        String confirm = scanner.nextLine();
-
-        if (confirm.equalsIgnoreCase("y")) {
+        System.out.print("\nYakin ingin menghapus semua data? (y/n): ");
+        if (scanner.nextLine().equalsIgnoreCase("y")) {
             head = null;
-
-            // Kosongkan isi file
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARSIP_FILE))) {
-                writer.write(""); // tulis kosong
-            } catch (IOException e) {
-                System.err.println("Gagal menghapus arsip: " + e.getMessage());
-                return;
-            }
-
-            System.out.println("Semua data servis berhasil dihapus.");
+            //simpanKeArsip();
+            System.out.println("Semua data berhasil dihapus!");
         } else {
-            System.out.println("Penghapusan semua data dibatalkan.");
+            System.out.println("Penghapusan dibatalkan");
         }
     }
 
-    public void updateDataService() {
-        muatDariArsip(); // Ambil data dari file ke memori (linked list)
-
-        Scanner scanner = new Scanner(System.in);
-
-        // Input ID Service yang ingin diupdate
-        System.out.print("Masukkan Service ID yang ingin diupdate: ");
-        int serviceId = 0;
-        try {
-            serviceId = Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("Input ID tidak valid!");
-            return; // keluar dari fungsi jika input salah
+public void updateDataService(Scanner scanner) {
+        System.out.println("\n=== Update Data Service ===");
+        if (head == null) {
+            System.out.println("Data kosong!");
+            return;
         }
-
+        
+        System.out.print("Masukkan ID service: ");
+        int id;
+        try {
+            id = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("ID tidak valid!");
+            return;
+        }
+        
         ServiceNode current = head;
-        boolean ditemukan = false;
-
         while (current != null) {
-            if (current.getServiceId() == serviceId) {
-                ditemukan = true;
-
-                // Tampilkan data lama
-                System.out.println("Data ditemukan:");
+            if (current.getServiceId() == id) {
+                System.out.println("\nData ditemukan:");
                 System.out.println(current);
-
-                // Input data baru, jika kosong maka data lama tetap
-                System.out.print("Nama Customer [" + current.getCustomerName() + "]: ");
+                
+                System.out.println("\nMasukkan data baru (kosongkan jika tidak berubah):");
+                System.out.print("Nama [" + current.getCustomerName() + "]: ");
                 String nama = scanner.nextLine();
                 if (!nama.isEmpty()) current.setCustomerName(nama);
-
-                System.out.print("Tipe Device [" + current.getDeviceType() + "]: ");
-                String device = scanner.nextLine();
-                if (!device.isEmpty()) current.setDeviceType(device);
-
-                System.out.print("Deskripsi Masalah [" + current.getProblemDescription() + "]: ");
+                
+                System.out.print("Perangkat [" + current.getDeviceType() + "]: ");
+                String perangkat = scanner.nextLine();
+                if (!perangkat.isEmpty()) current.setDeviceType(perangkat);
+                
+                System.out.print("Masalah [" + current.getProblemDescription() + "]: ");
                 String masalah = scanner.nextLine();
                 if (!masalah.isEmpty()) current.setProblemDescription(masalah);
-
+                
                 System.out.print("Biaya [" + current.getCost() + "]: ");
-                String biayaInput = scanner.nextLine();
-                if (!biayaInput.isEmpty()) {
+                String biayaStr = scanner.nextLine();
+                if (!biayaStr.isEmpty()) {
                     try {
-                        current.setCost(Double.parseDouble(biayaInput));
+                        double biaya = Double.parseDouble(biayaStr);
+                        if (biaya >= 0) current.setCost(biaya);
+                        else System.out.println("Biaya tidak valid, data tidak diubah");
                     } catch (NumberFormatException e) {
-                        System.out.println("Biaya tidak valid, tidak diubah.");
+                        System.out.println("Input tidak valid, data tidak diubah");
                     }
                 }
-
-                // Status menggunakan pilihan
-                System.out.println("Status sekarang: [" + current.getStatus() + "]");
+                
+                System.out.println("Status saat ini: " + current.getStatus());
                 System.out.println("Pilih status baru:");
-                current.setStatus(pilihStatusBaru(scanner));
+                System.out.println("1. pending");
+                System.out.println("2. on_going");
+                System.out.println("3. completed");
+                System.out.print("Pilihan (1-3): ");
+                String statusPilihan = scanner.nextLine();
+                switch (statusPilihan) {
+                    case "1": current.setStatus("pending"); break;
+                    case "2": current.setStatus("on_going"); break;
+                    case "3": current.setStatus("completed"); break;
+                    default: System.out.println("Status tidak berubah");
+                }
 
-                System.out.println("Data berhasil diupdate.");
-                break;
+                // simpanKeArsip();
+                System.out.println("\nData berhasil diupdate!");
+                return;
             }
             current = current.getNext();
         }
-
-        if (!ditemukan) {
-            System.out.println("Service ID " + serviceId + " tidak ditemukan.");
-        }
-            tulisUlangSeluruhArsip(); // Simpan semua perubahan ke file
-    }
-
-    private String pilihStatusBaru(Scanner scanner) {
-        while (true) {
-            System.out.println("1. pending");
-            System.out.println("2. on_going");
-            System.out.println("3. completed");
-            System.out.print("Pilih (1-3): ");
-            String pilih = scanner.nextLine();
-
-            switch (pilih) {
-                case "1": return "pending";
-                case "2": return "on_going";
-                case "3": return "completed";
-                default: System.out.println("Pilihan tidak valid, coba lagi.");
-            }
-        }
+        System.out.println("Data tidak ditemukan!");
     }
 
     // Helper untuk menyimpan ulang (menimpa) semua data dari linked list ke arsip
@@ -410,13 +455,70 @@ public class ServiceLinkedList {
                         current.getProblemDescription() + DELIMITER +
                         current.getServiceDate() + DELIMITER +
                         current.getCost() + DELIMITER +
-                        current.getStatus();
+                        current.getStatus() + DELIMITER +
+                        current.getPriority();
                 writer.write(data);
                 writer.newLine();
                 current = current.getNext();
             }
         } catch (IOException e) {
             System.err.println("Gagal menyimpan ulang data ke arsip: " + e.getMessage());
+        }
+    }
+
+    public void mainMenu() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("\n=== SISTEM PENCATATAN DATA SERVICE ===");
+            System.out.println("1. Tambah Data Service");
+            System.out.println("2. Baca File Arsip");
+            System.out.println("3. Statistik Service");
+            System.out.println("4. Hapus Data Service berdasarkan ID");
+            System.out.println("5. Hapus Semua Data Service");
+            System.out.println("6. Update Data Service");
+            System.out.println("0. Keluar");
+            System.out.print("Pilih menu: ");
+            int pilihan = 0;
+            try {
+                pilihan = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Pilihan tidak valid!");
+                continue;
+            }
+
+            switch (pilihan) {
+                case 1:
+                    System.out.println("======");
+                    this.tambahDataService(scanner);
+                    break;
+                case 2:
+                    System.out.println("======");
+                    this.bacaFile();
+                    break;
+                case 3:
+                    System.out.println("======");
+                    this.statistik();
+                    break;
+                case 4:
+                    System.out.println("======");
+                    this.hapusById(scanner);;
+                    break;
+                case 5:
+                    System.out.println("======");
+                    this.hapusAll(scanner);
+                    break;
+                case 6:
+                    System.out.println("======");
+                    this.updateDataService(scanner);;
+                    break;
+                case 0:
+                    System.out.println("======");
+                    System.out.println("Terima kasih!");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Pilihan tidak valid!");
+            }
         }
     }
 }

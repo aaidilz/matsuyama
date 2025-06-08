@@ -8,6 +8,7 @@ public class ServiceNode {
     private LocalDate serviceDate;
     private double cost;
     private String status; // 'pending', 'on_going', 'completed'
+    private String priority;
     private ServiceNode next;
 
     // Constructor for default service
@@ -19,16 +20,18 @@ public class ServiceNode {
         this.serviceDate = LocalDate.now();
         this.cost = 0.0;
         this.status = "pending";
+        this.priority = ""; // Default priority
         this.next = null;
     }
 
     // Constructor for new service
-    public ServiceNode(String customerName, String deviceType, String problemDescription, double cost) {
+    public ServiceNode(String customerName, String deviceType, String problemDescription, double cost, String priority) {
         this.customerName = customerName;
         this.deviceType = deviceType;
         this.problemDescription = problemDescription;
         this.cost = cost;
         this.status = "pending";
+        this.priority = priority;
         this.serviceDate = LocalDate.now();
     }
 
@@ -103,6 +106,15 @@ public class ServiceNode {
                 ", Problem: " + problemDescription +
                 ", Date: " + serviceDate +
                 ", Cost: Rp" + cost +
-                ", Status: " + status;
+                ", Status: " + status +
+                ", Prioritas: " + priority;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 }
