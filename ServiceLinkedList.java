@@ -436,7 +436,6 @@ public class ServiceLinkedList {
                     default:
                         System.out.println("Status tidak berubah");
                 }
-                simpanKeArsip(); // menyimpan seluruh linked list ke file
                 System.out.println("\nData berhasil diupdate!");
                 return;
             }
