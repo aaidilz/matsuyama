@@ -367,8 +367,6 @@ public class ServiceLinkedList {
     public void updateDataService(Scanner scanner) {
         System.out.println("\n=== Update Data Service ===");
 
-        muatDariArsip();
-
         if (head == null) {
             System.out.println("Data kosong!");
             return;
@@ -384,16 +382,12 @@ public class ServiceLinkedList {
         }
 
         ServiceNode current = head;
-        boolean ditemukan = false;
-
         while (current != null) {
             if (current.getServiceId() == id) {
-                ditemukan = true;
                 System.out.println("\nData ditemukan:");
                 System.out.println(current);
 
                 System.out.println("\nMasukkan data baru (kosongkan jika tidak berubah):");
-
                 System.out.print("Nama [" + current.getCustomerName() + "]: ");
                 String nama = scanner.nextLine();
                 if (!nama.isEmpty()) current.setCustomerName(nama);
@@ -442,14 +436,13 @@ public class ServiceLinkedList {
                     default:
                         System.out.println("Status tidak berubah");
                 }
+                simpanKeArsip(); // menyimpan seluruh linked list ke file
                 System.out.println("\nData berhasil diupdate!");
                 return;
             }
             current = current.getNext();
         }
-        if (!ditemukan) {
-            System.out.println("Data tidak ditemukan!");
-        }
+        System.out.println("Data tidak ditemukan!");
     }
 
     // ======================= FILTER DATA =======================
