@@ -214,36 +214,6 @@ public class ServiceLinkedList {
         }
     }
 
-    // Fungsi untuk membaca ID terakhir dari arsip
-    private int bacaIdTerakhirDariArsip() {
-        int lastId = 0;
-        try (FileReader reader = new FileReader(ARSIP_FILE);
-                BufferedReader bufferedReader = new BufferedReader(reader)) {
-
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] data = line.split("\\" + DELIMITER);
-                if (data.length > 0) {
-                    try {
-                        int currentId = Integer.parseInt(data[0]);
-                        if (currentId > lastId) {
-                            lastId = currentId;
-                        }
-                    } catch (NumberFormatException e) {
-                        // Skip baris yang tidak valid
-                    }
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            // File belum ada, return 0
-            return 0;
-        } catch (IOException e) {
-            System.err.println("Error saat membaca ID dari arsip: " + e.getMessage());
-        }
-
-        return lastId;
-    }
 
     // Helper untuk ambil data service di arsip, lalu simpan ke head
     private void muatDariArsip() {
@@ -466,36 +436,12 @@ public class ServiceLinkedList {
                     default:
                         System.out.println("Status tidak berubah");
                 }
-
-                // simpanKeArsip();
                 System.out.println("\nData berhasil diupdate!");
                 return;
             }
             current = current.getNext();
         }
         System.out.println("Data tidak ditemukan!");
-    }
-
-    // Helper untuk menyimpan ulang (menimpa) semua data dari linked list ke arsip
-    private void tulisUlangSeluruhArsip() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARSIP_FILE))) {
-            ServiceNode current = head;
-            while (current != null) {
-                String data = current.getServiceId() + DELIMITER +
-                        current.getCustomerName() + DELIMITER +
-                        current.getDeviceType() + DELIMITER +
-                        current.getProblemDescription() + DELIMITER +
-                        current.getServiceDate() + DELIMITER +
-                        current.getCost() + DELIMITER +
-                        current.getStatus() + DELIMITER +
-                        current.getPriority();
-                writer.write(data);
-                writer.newLine();
-                current = current.getNext();
-            }
-        } catch (IOException e) {
-            System.err.println("Gagal menyimpan ulang data ke arsip: " + e.getMessage());
-        }
     }
 
     // ======================= FILTER DATA =======================
