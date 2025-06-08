@@ -595,6 +595,33 @@ public class ServiceLinkedList {
         }
     }
 
+    public void hapusMenu(Scanner scanner) {
+        System.out.println("\n=== Hapus Data Service ===");
+        System.out.println("1. Hapus head");
+        System.out.println("2. Hapus tail");
+        System.out.println("3. Hapus berdasarkan ID");
+        System.out.println("4. Hapus semua data");
+        System.out.print("Pilih opsi (1-4): ");
+
+        String pilihan = scanner.nextLine();
+        switch (pilihan) {
+            case "1":
+                hapusHead();
+                break;
+            case "2":
+                hapusTail();
+                break;
+            case "3":
+                hapusById(scanner);
+                break;
+            case "4":
+                hapusAll(scanner);
+                break;
+            default:
+                System.out.println("Pilihan tidak valid!");
+        }
+    }
+
     public void mainMenu() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -602,10 +629,9 @@ public class ServiceLinkedList {
             System.out.println("1. Tambah Data Service");
             System.out.println("2. Baca File Arsip");
             System.out.println("3. Statistik Service");
-            System.out.println("4. Hapus Data Service berdasarkan ID");
-            System.out.println("5. Hapus Semua Data Service");
-            System.out.println("6. Update Data Service");
-            System.out.println("7. Filter Data");
+            System.out.println("4. Hapus Data Service");
+            System.out.println("5. Update Data Service");
+            System.out.println("6. Filter Data Service");
             System.out.println("0. Keluar");
             System.out.print("Pilih menu: ");
             int pilihan = 0;
@@ -631,18 +657,13 @@ public class ServiceLinkedList {
                     break;
                 case 4:
                     System.out.println("======");
-                    this.hapusById(scanner);
-                    ;
+                    this.hapusMenu(scanner);
                     break;
                 case 5:
                     System.out.println("======");
-                    this.hapusAll(scanner);
-                    break;
-                case 6:
-                    System.out.println("======");
                     this.updateDataService(scanner);
                     break;
-                case 7:
+                case 6:
                     System.out.println("======");
                     this.filterData(scanner);
                     break;
