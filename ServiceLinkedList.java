@@ -366,6 +366,9 @@ public class ServiceLinkedList {
 
     public void updateDataService(Scanner scanner) {
         System.out.println("\n=== Update Data Service ===");
+
+        muatDariArsip();
+
         if (head == null) {
             System.out.println("Data kosong!");
             return;
@@ -381,38 +384,41 @@ public class ServiceLinkedList {
         }
 
         ServiceNode current = head;
+        boolean ditemukan = false;
+
         while (current != null) {
             if (current.getServiceId() == id) {
+                ditemukan = true;
                 System.out.println("\nData ditemukan:");
                 System.out.println(current);
 
                 System.out.println("\nMasukkan data baru (kosongkan jika tidak berubah):");
+
                 System.out.print("Nama [" + current.getCustomerName() + "]: ");
                 String nama = scanner.nextLine();
-                if (!nama.isEmpty())
-                    current.setCustomerName(nama);
+                if (!nama.isEmpty()) current.setCustomerName(nama);
 
                 System.out.print("Perangkat [" + current.getDeviceType() + "]: ");
                 String perangkat = scanner.nextLine();
-                if (!perangkat.isEmpty())
+                if (!perangkat.isEmpty()) 
                     current.setDeviceType(perangkat);
 
                 System.out.print("Masalah [" + current.getProblemDescription() + "]: ");
                 String masalah = scanner.nextLine();
-                if (!masalah.isEmpty())
-                    current.setProblemDescription(masalah);
+                if (!masalah.isEmpty()) current.setProblemDescription(masalah);
 
                 System.out.print("Biaya [" + current.getCost() + "]: ");
                 String biayaStr = scanner.nextLine();
                 if (!biayaStr.isEmpty()) {
                     try {
                         double biaya = Double.parseDouble(biayaStr);
-                        if (biaya >= 0)
+                        if (biaya >= 0) {
                             current.setCost(biaya);
-                        else
-                            System.out.println("Biaya tidak valid, data tidak diubah");
+                        } else {
+                            System.out.println("Biaya tidak valid, data tidak diubah.");
+                        }
                     } catch (NumberFormatException e) {
-                        System.out.println("Input tidak valid, data tidak diubah");
+                        System.out.println("Input tidak valid, data tidak diubah.");
                     }
                 }
 
@@ -441,7 +447,9 @@ public class ServiceLinkedList {
             }
             current = current.getNext();
         }
-        System.out.println("Data tidak ditemukan!");
+        if (!ditemukan) {
+            System.out.println("Data tidak ditemukan!");
+        }
     }
 
     // ======================= FILTER DATA =======================

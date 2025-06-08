@@ -1,6 +1,9 @@
+8|Raden Indra|LOQ|Keybord error|2025-06-08|350000.0|on_going|mudah
 2|ismail|laptop|flkejwjf|2025-06-04|1231231.0|pending|mudah
 3|memew|feijf|ffewpoofjjewofkwof|2025-06-04|423432.0|pending|sedang
 4|ismail|laptop|flkejwjf|2025-06-04|1231231.0|pending|mudah
 5|aidil|lddsgd|gregre|2025-06-04|123.0|pending|mudah
 6|ck|hp|cd|2025-06-08|800000.0|pending|menengah
+9|Raden|laptop|lcd|2025-06-08|300000.0|pending|menengah
 7|pedil|lepop|meledak karena ngoding|2025-06-08|100.0|pending|sulit
+10|raden|hp|lcd|2025-06-08|200000.0|pending|sulit
