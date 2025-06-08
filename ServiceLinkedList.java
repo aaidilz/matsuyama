@@ -149,24 +149,37 @@ public class ServiceLinkedList {
     }
 
     // Fungsi untuk menyimpan data ke file arsip
-    private void simpanKeArsip(ServiceNode node) {
-        try (FileWriter writer = new FileWriter(ARSIP_FILE, true);
-                BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
 
-            String data = node.getServiceId() + DELIMITER +
-                    node.getCustomerName() + DELIMITER +
-                    node.getDeviceType() + DELIMITER +
-                    node.getProblemDescription() + DELIMITER +
-                    node.getServiceDate().toString() + DELIMITER +
-                    node.getCost() + DELIMITER +
-                    node.getStatus() + DELIMITER +
-                    node.getPriority();
+    public void simpanKeArsip() {
+        if (head == null) {
+            System.out.println("\nMemori kosong, tidak ada data untuk disimpan.");
+            // Jika ingin mengosongkan file juga, bisa tambahkan logic di sini
+            try (FileWriter writer = new FileWriter(ARSIP_FILE, false)) {
+                // File akan dikosongkan
+            } catch (IOException e) {
+                System.err.println("Gagal mengosongkan file arsip: " + e.getMessage());
+            }
+            return;
+        }
 
-            bufferedWriter.write(data);
-            bufferedWriter.newLine();
-
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARSIP_FILE, false))) { // false untuk overwrite
+            ServiceNode current = head;
+            while (current != null) {
+                String data = current.getServiceId() + DELIMITER +
+                        current.getCustomerName() + DELIMITER +
+                        current.getDeviceType() + DELIMITER +
+                        current.getProblemDescription() + DELIMITER +
+                        current.getServiceDate() + DELIMITER +
+                        current.getCost() + DELIMITER +
+                        current.getStatus() + DELIMITER +
+                        current.getPriority();
+                writer.write(data);
+                writer.newLine();
+                current = current.getNext();
+            }
+            System.out.println("\nData dari memori berhasil disimpan ke dalam file arsip!");
         } catch (IOException e) {
-            System.err.println("Error saat menyimpan ke arsip: " + e.getMessage());
+            System.err.println("Gagal menyimpan data ke arsip: " + e.getMessage());
         }
     }
 
@@ -632,6 +645,7 @@ public class ServiceLinkedList {
             System.out.println("4. Hapus Data Service");
             System.out.println("5. Update Data Service");
             System.out.println("6. Filter Data Service");
+            System.out.println("7. Simpan Perubahan ke Arsip");
             System.out.println("0. Keluar");
             System.out.print("Pilih menu: ");
             int pilihan = 0;
@@ -666,6 +680,10 @@ public class ServiceLinkedList {
                 case 6:
                     System.out.println("======");
                     this.filterData(scanner);
+                    break;
+                case 7:
+                    System.out.println("======");
+                    this.simpanKeArsip();
                     break;
                 case 0:
                     System.out.println("======");
